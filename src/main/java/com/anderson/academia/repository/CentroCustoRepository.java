@@ -1,9 +1,9 @@
-package com.anderson.academia.repository;
+// package com.anderson.academia.repository;
 
-import com.anderson.academia.model.CentroCusto;
+// import com.anderson.academia.model.CentroCusto;
 
-import org.springframework.data.jpa.repository.JpaRepository;
+// import org.springframework.data.jpa.repository.JpaRepository;
 
-public interface CentroCustoRepository extends JpaRepository<CentroCusto,Long> {
-    CentroCusto findById(long id);
-}
+// public interface CentroCustoRepository extends JpaRepository<CentroCusto,Long> {
+//     CentroCusto findById(long id);
+// }

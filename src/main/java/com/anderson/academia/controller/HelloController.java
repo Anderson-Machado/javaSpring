@@ -2,7 +2,9 @@ package com.anderson.academia.controller;
 import java.util.ArrayList;
 import com.anderson.academia.model.Aluno;
 import com.anderson.academia.model.Endereco;
+import com.anderson.academia.model.EnderecoCompleto;
 import com.anderson.academia.model.SemanaEnum;
+import com.anderson.academia.model.ViaCep;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -54,11 +56,16 @@ public class HelloController {
     // **Exemplo de consulta externa usando path params */
 
     @RequestMapping(value = "/cep/{cep}", method = RequestMethod.GET)
-    public String getCep(@PathVariable("cep") String cep) {
+    public EnderecoCompleto getCep(@PathVariable("cep") String cep) {
         RestTemplate restTemplate = new RestTemplate();
         var url = "https://viacep.com.br/ws/" + cep + "/json/";
-        var response = restTemplate.getForEntity(url, String.class);
-        return response.getBody();
+        var response = restTemplate.getForObject(url, ViaCep.class);
+        
+        //**Mapenando o objeto que vem do via cep para outro formato de BODY*/
+        var endereco = new EnderecoCompleto();
+        endereco.GenerateEnderecoCompleto(response);
+
+        return endereco;
     }
 
     // **Usando exemplo de consulta com querystring */
