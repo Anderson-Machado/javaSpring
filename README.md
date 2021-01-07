@@ -10,3 +10,6 @@ Projeto de teste API Rest em JAVA utilizado como referência para estudo de dese
 - https://www.youtube.com/watch?v=oxcfUj3bi_M
 ### Como criar uma REST API com Spring Boot
 - https://www.youtube.com/watch?v=9GWK9A79tEc
+
+### Exemplo de Utilização de Strategy Design Pattern
+- Veja a consulta /cepstrategy/{cep}

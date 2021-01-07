@@ -1,6 +1,11 @@
 package com.anderson.academia.controller;
 
 import java.util.ArrayList;
+
+import com.anderson.academia.controller.strategy.GenerateViaCep;
+import com.anderson.academia.controller.strategy.TypeRequest;
+import com.anderson.academia.controller.strategy.ViaCepComplet;
+import com.anderson.academia.controller.strategy.ViaCepParcial;
 import com.anderson.academia.model.Aluno;
 import com.anderson.academia.model.CentroCusto;
 import com.anderson.academia.model.Endereco;
@@ -13,12 +18,15 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.client.RestTemplate;
+
+import ch.qos.logback.core.joran.conditional.ElseAction;
 
 @RestController
 public class HelloController {
@@ -27,8 +35,7 @@ public class HelloController {
      */
 
     @Autowired
-	CentroCustoRepository produtoRepository;
-
+    CentroCustoRepository produtoRepository;
 
     @GetMapping(value = "/aluno")
     @ResponseStatus(code = HttpStatus.OK)
@@ -67,12 +74,36 @@ public class HelloController {
         RestTemplate restTemplate = new RestTemplate();
         var url = "https://viacep.com.br/ws/" + cep + "/json/";
         var response = restTemplate.getForObject(url, ViaCep.class);
-        
-        //**Mapenando o objeto que vem do via cep para outro formato de BODY*/
+
+        // **Mapenando o objeto que vem do via cep para outro formato de BODY*/
         var endereco = new EnderecoCompleto();
         endereco.GenerateEnderecoCompleto(response);
 
         return endereco;
+    }
+
+    /**
+     * Testando o Strategy Design Pattern para retornar objetos diferentes baseado
+     * em consultas
+     */
+    @RequestMapping(value = "/cepstrategy/{cep}", method = RequestMethod.GET)
+    public Object getCepStrategy(@PathVariable("cep") String cep, @RequestBody TypeRequest bodyResponse) {
+        RestTemplate restTemplate = new RestTemplate();
+        var url = "https://viacep.com.br/ws/" + cep + "/json/";
+
+        var response = restTemplate.getForObject(url, ViaCep.class);
+
+        if (bodyResponse.getType().equalsIgnoreCase("Complet")) {
+
+            var viaComplet = new GenerateViaCep(new ViaCepComplet());
+            return viaComplet.generateObject(response);
+
+        } else {
+
+            var viaComplet = new GenerateViaCep(new ViaCepParcial());
+            return viaComplet.generateObject(response);
+        }
+
     }
 
     // **Usando exemplo de consulta com querystring */
@@ -86,17 +117,16 @@ public class HelloController {
 
     @GetMapping(value = "/semana")
     public String getDiaSemana() {
-    
+
         SemanaEnum semana = SemanaEnum.DOMINGO;
-       
+
         return semana.name();
     }
 
-    
-    @GetMapping(value ="/produto/{id}")
-	public CentroCusto listaProdutoUnico(@PathVariable("id") int id){
-        var result = produtoRepository.findById(id); 
-		return result;
-	}
+    @GetMapping(value = "/produto/{id}")
+    public CentroCusto listaProdutoUnico(@PathVariable("id") int id) {
+        var result = produtoRepository.findById(id);
+        return result;
+    }
 
 }
