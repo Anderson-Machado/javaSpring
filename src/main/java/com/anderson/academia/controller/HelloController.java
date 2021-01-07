@@ -1,11 +1,15 @@
 package com.anderson.academia.controller;
+
 import java.util.ArrayList;
 import com.anderson.academia.model.Aluno;
+import com.anderson.academia.model.CentroCusto;
 import com.anderson.academia.model.Endereco;
 import com.anderson.academia.model.EnderecoCompleto;
 import com.anderson.academia.model.SemanaEnum;
 import com.anderson.academia.model.ViaCep;
+import com.anderson.academia.repository.CentroCustoRepository;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -21,6 +25,9 @@ public class HelloController {
     /**
      *
      */
+
+    @Autowired
+	CentroCustoRepository produtoRepository;
 
 
     @GetMapping(value = "/aluno")
@@ -84,5 +91,12 @@ public class HelloController {
        
         return semana.name();
     }
+
+    
+    @GetMapping(value ="/produto/{id}")
+	public CentroCusto listaProdutoUnico(@PathVariable("id") int id){
+        var result = produtoRepository.findById(id); 
+		return result;
+	}
 
 }

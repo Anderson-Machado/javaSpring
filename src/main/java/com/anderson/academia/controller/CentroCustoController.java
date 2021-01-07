@@ -15,7 +15,7 @@
 // 	CentroCustoRepository produtoRepository;
 
 //     @GetMapping("/produto/{id}")
-// 	public CentroCusto listaProdutoUnico(@PathVariable(value="id") long id){
+// 	public CentroCusto listaProdutoUnico(@PathVariable(value="id") int id){
 // 		return produtoRepository.findById(id);
 // 	}
 // }
